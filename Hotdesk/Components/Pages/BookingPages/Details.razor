@@ -1,0 +1,60 @@
+﻿@page "/bookings/details"
+@using Microsoft.EntityFrameworkCore
+@using Hotdesk.Models
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Booking</h2>
+    <hr />
+    @if (booking is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DeskId</dt>
+            <dd class="col-sm-10">@booking.DeskId</dd>
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@booking.UserId</dd>
+            <dt class="col-sm-2">UserName</dt>
+            <dd class="col-sm-10">@booking.UserName</dd>
+            <dt class="col-sm-2">BookingDate</dt>
+            <dd class="col-sm-10">@booking.BookingDate</dd>
+            <dt class="col-sm-2">StartTime</dt>
+            <dd class="col-sm-10">@booking.StartTime</dd>
+            <dt class="col-sm-2">EndTime</dt>
+            <dd class="col-sm-10">@booking.EndTime</dd>
+            <dt class="col-sm-2">CheckedIn</dt>
+            <dd class="col-sm-10">@booking.CheckedIn</dd>
+            <dt class="col-sm-2">CheckInTime</dt>
+            <dd class="col-sm-10">@booking.CheckInTime</dd>
+        </dl>
+        <div>
+            <a href="@($"/bookings/edit?id={booking.Id}")">Edit</a> |
+            <a href="@($"/bookings")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Booking? booking;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        booking = await context.Booking.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (booking is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,64 @@
+﻿@page "/desks/create"
+@using Microsoft.EntityFrameworkCore
+@using Hotdesk.Components.Models
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Desk</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Desk" OnValidSubmit="AddDesk" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Desk.Name" class="form-control" /> 
+                <ValidationMessage For="() => Desk.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="location" class="form-label">Location:</label> 
+                <InputText id="location" @bind-Value="Desk.Location" class="form-control" /> 
+                <ValidationMessage For="() => Desk.Location" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="hasmonitor" class="form-label">HasMonitor:</label> 
+                <InputCheckbox id="hasmonitor" @bind-Value="Desk.HasMonitor" class="form-check-input" /> 
+                <ValidationMessage For="() => Desk.HasMonitor" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isavailable" class="form-label">IsAvailable:</label> 
+                <InputCheckbox id="isavailable" @bind-Value="Desk.IsAvailable" class="form-check-input" /> 
+                <ValidationMessage For="() => Desk.IsAvailable" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="Desk.Description" class="form-control" /> 
+                <ValidationMessage For="() => Desk.Description" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/desks">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Desk Desk { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddDesk()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Desk.Add(Desk);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/desks");
+    }
+}

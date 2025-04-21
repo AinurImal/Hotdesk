@@ -1,0 +1,113 @@
+﻿@page "/bookings/create"
+@using Hotdesk.Components.Models
+@using Microsoft.EntityFrameworkCore
+@using Hotdesk.Models
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Booking</PageTitle>
+
+<h1>Create Booking</h1>
+
+<h2>Booking</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Booking" OnValidSubmit="AddBooking" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+
+            <div class="mb-3">
+                <label for="deskid" class="form-label">Desk ID:</label>
+                <select id="deskid" class="form-select" @bind="Booking.DeskId">
+                    @if (Desks == null || !Desks.Any())
+                    {
+                        <option disabled>No desks available</option>
+                    }
+                    else
+                    {
+                        @foreach (var desk in Desks)
+                        {
+                            <option value="@desk.Id">@desk.Id - @desk.Name</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="() => Booking.DeskId" class="text-danger" />
+            </div>
+
+
+
+            <div class="mb-3">
+                <label for="userid" class="form-label">User ID:</label>
+                <InputText id="userid" @bind-Value="Booking.UserId" class="form-control" />
+                <ValidationMessage For="() => Booking.UserId" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label for="username" class="form-label">User Name:</label>
+                <InputText id="username" @bind-Value="Booking.UserName" class="form-control" />
+                <ValidationMessage For="() => Booking.UserName" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label for="bookingdate" class="form-label">Booking Date:</label>
+                <InputDate id="bookingdate" @bind-Value="Booking.BookingDate" class="form-control" />
+                <ValidationMessage For="() => Booking.BookingDate" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label for="starttime" class="form-label">Start Time:</label>
+                <input id="starttime" type="time" class="form-control" @bind="Booking.StartTime" />
+                <ValidationMessage For="() => Booking.StartTime" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label for="endtime" class="form-label">End Time:</label>
+                <input id="endtime" type="time" class="form-control" @bind="Booking.EndTime" />
+                <ValidationMessage For="() => Booking.EndTime" class="text-danger" />
+            </div>
+
+
+            <div class="mb-3">
+                <label for="checkedin" class="form-label">Checked In:</label>
+                <InputCheckbox id="checkedin" @bind-Value="Booking.CheckedIn" class="form-check-input" />
+                <ValidationMessage For="() => Booking.CheckedIn" class="text-danger" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/bookings">Back to List</a>
+</div>
+
+@code {
+    private Booking Booking { get; set; } = new();
+    private List<Desk> Desks { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Desks = await context.Desk.ToListAsync();
+    }
+
+    private async Task AddBooking()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        // Validate that the selected DeskId exists
+        var deskExists = await context.Desk.AnyAsync(d => d.Id == Booking.DeskId);
+        if (!deskExists)
+        {
+            throw new InvalidOperationException("The selected Desk ID does not exist.");
+        }
+
+        context.Booking.Add(Booking);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/bookings");
+    }
+
+
+}

@@ -1,0 +1,54 @@
+﻿@page "/desks/details"
+@using Microsoft.EntityFrameworkCore
+@using Hotdesk.Components.Models
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Desk</h2>
+    <hr />
+    @if (desk is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@desk.Name</dd>
+            <dt class="col-sm-2">Location</dt>
+            <dd class="col-sm-10">@desk.Location</dd>
+            <dt class="col-sm-2">HasMonitor</dt>
+            <dd class="col-sm-10">@desk.HasMonitor</dd>
+            <dt class="col-sm-2">IsAvailable</dt>
+            <dd class="col-sm-10">@desk.IsAvailable</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@desk.Description</dd>
+        </dl>
+        <div>
+            <a href="@($"/desks/edit?id={desk.Id}")">Edit</a> |
+            <a href="@($"/desks")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Desk? desk;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        desk = await context.Desk.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (desk is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
