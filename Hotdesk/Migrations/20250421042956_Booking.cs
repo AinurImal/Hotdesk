@@ -43,6 +43,8 @@ namespace Hotdesk.Migrations
                 column: "DeskId");
         }
 
+
+
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

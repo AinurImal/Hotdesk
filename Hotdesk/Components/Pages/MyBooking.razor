@@ -1,0 +1,54 @@
+﻿@page "/my-booking"
+@using Hotdesk.Components.Models
+@using Hotdesk.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+
+<PageTitle>My Booking</PageTitle>
+
+<h1>My Booking</h1>
+
+@if (Bookings != null && Bookings.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Desk</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Checked In</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Bookings)
+            {
+                <tr>
+                    <td>@booking.Desk?.Name</td>
+                    <td>@booking.BookingDate.ToShortDateString()</td>
+                    <td>@booking.StartTime.ToShortTimeString()</td>
+                    <td>@booking.EndTime.ToShortTimeString()</td>
+                    <td>@(booking.CheckedIn ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No bookings found.</p>
+}
+
+@code {
+    private List<Booking> Bookings = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Bookings = await context.Booking
+            .Include(b => b.Desk)
+            .Where(b => b.UserId == "current-user-id") // Replace with actual user ID logic
+            .ToListAsync();
+    }
+}
+

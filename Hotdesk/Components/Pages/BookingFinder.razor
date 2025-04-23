@@ -1,0 +1,52 @@
+﻿@page "/booking-finder"
+@using Hotdesk.Components.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<Hotdesk.Data.HotdeskContext> DbFactory
+
+<PageTitle>Booking Finder</PageTitle>
+
+<h1>Booking Finder</h1>
+
+<div class="mb-3">
+    <label for="location" class="form-label">Location:</label>
+    <InputText id="location" @bind-Value="SearchLocation" class="form-control" />
+</div>
+
+<div class="mb-3">
+    <label for="date" class="form-label">Date:</label>
+    <InputDate id="date" @bind-Value="SearchDate" class="form-control" />
+</div>
+
+<button class="btn btn-primary" @onclick="FindDesks">Find Desks</button>
+
+<hr />
+
+@if (Desks != null && Desks.Any())
+{
+    <h2>Available Desks</h2>
+    <ul>
+        @foreach (var desk in Desks)
+        {
+            <li>@desk.Name - @desk.Location</li>
+        }
+    </ul>
+}
+else if (Desks != null)
+{
+    <p>No desks available for the selected criteria.</p>
+}
+
+@code {
+    private string SearchLocation = string.Empty;
+    private DateTime? SearchDate;
+    private List<Desk> Desks = new();
+
+    private async Task FindDesks()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Desks = await context.Desk
+            .Where(d => d.Location.Contains(SearchLocation) && d.IsAvailable)
+            .ToListAsync();
+    }
+}
+

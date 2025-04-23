@@ -14,7 +14,7 @@ namespace Hotdesk.Migrations
                 name: "Desk",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false), // Removed Identity
+                    DeskId = table.Column<int>(type: "int", nullable: false), // Removed Identity
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HasMonitor = table.Column<bool>(type: "bit", nullable: false),
@@ -23,9 +23,13 @@ namespace Hotdesk.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Desk", x => x.Id);
+                    table.PrimaryKey("PK_Desk", x => x.DeskId);
                 });
+
+            // No hardcoded data; ready for user input
         }
+
+
 
 
         /// <inheritdoc />

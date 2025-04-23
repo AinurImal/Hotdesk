@@ -14,7 +14,7 @@
     <a href="desks/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Desk">
+<QuickGrid Class="table" Items="@(desks.AsQueryable())">
     <PropertyColumn Property="desk => desk.Id" Title="Desk ID" />
     <PropertyColumn Property="desk => desk.Name" />
     <PropertyColumn Property="desk => desk.Location" />
@@ -31,11 +31,15 @@
 
 @code {
     private HotdeskContext context = default!;
+    private List<Desk> desks = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        desks = await context.Desk.ToListAsync(); // Fetch desks from the database
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
+
+
