@@ -5,18 +5,16 @@ using Hotdesk.Data;
 using Hotdesk.Models;
 using Hotdesk.Components.Models;
 
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
 builder.Services.AddDbContextFactory<HotdeskContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HotdeskContext") ?? throw new InvalidOperationException("Connection string 'HotdeskContext' not found.")));
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddControllers(); // Add this line to register controllers
 
 var app = builder.Build();
 
@@ -24,18 +22,16 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapControllers(); // Add this line to map API controllers
 
 using (var scope = app.Services.CreateScope())
 {
@@ -53,6 +49,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
-
 app.Run();
+
+
+
+

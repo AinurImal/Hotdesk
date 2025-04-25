@@ -14,32 +14,32 @@
     <div class="col-md-4">
         <EditForm method="post" Model="Desk" OnValidSubmit="AddDesk" FormName="create" Enhance>
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+            <ValidationSummary class="text-danger" role="alert" />
             <div class="mb-3">
-                <label for="name" class="form-label">Name:</label> 
-                <InputText id="name" @bind-Value="Desk.Name" class="form-control" /> 
-                <ValidationMessage For="() => Desk.Name" class="text-danger" /> 
-            </div>        
+                <label for="name" class="form-label">Name:</label>
+                <InputText id="name" @bind-Value="Desk.Name" class="form-control" />
+                <ValidationMessage For="() => Desk.Name" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="location" class="form-label">Location:</label> 
-                <InputText id="location" @bind-Value="Desk.Location" class="form-control" /> 
-                <ValidationMessage For="() => Desk.Location" class="text-danger" /> 
-            </div>        
+                <label for="location" class="form-label">Location:</label>
+                <InputText id="location" @bind-Value="Desk.Location" class="form-control" />
+                <ValidationMessage For="() => Desk.Location" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="hasmonitor" class="form-label">HasMonitor:</label> 
-                <InputCheckbox id="hasmonitor" @bind-Value="Desk.HasMonitor" class="form-check-input" /> 
-                <ValidationMessage For="() => Desk.HasMonitor" class="text-danger" /> 
-            </div>        
+                <label for="hasmonitor" class="form-label">HasMonitor:</label>
+                <InputCheckbox id="hasmonitor" @bind-Value="Desk.HasMonitor" class="form-check-input" />
+                <ValidationMessage For="() => Desk.HasMonitor" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="isavailable" class="form-label">IsAvailable:</label> 
-                <InputCheckbox id="isavailable" @bind-Value="Desk.IsAvailable" class="form-check-input" /> 
-                <ValidationMessage For="() => Desk.IsAvailable" class="text-danger" /> 
-            </div>        
+                <label for="isavailable" class="form-label">IsAvailable:</label>
+                <InputCheckbox id="isavailable" @bind-Value="Desk.IsAvailable" class="form-check-input" />
+                <ValidationMessage For="() => Desk.IsAvailable" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="description" class="form-label">Description:</label> 
-                <InputText id="description" @bind-Value="Desk.Description" class="form-control" /> 
-                <ValidationMessage For="() => Desk.Description" class="text-danger" /> 
-            </div>        
+                <label for="description" class="form-label">Description:</label>
+                <InputText id="description" @bind-Value="Desk.Description" class="form-control" />
+                <ValidationMessage For="() => Desk.Description" class="text-danger" />
+            </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -62,3 +62,6 @@
         NavigationManager.NavigateTo("/desks");
     }
 }
+
+
+
